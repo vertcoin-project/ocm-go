@@ -34,7 +34,7 @@ func startupWindow() string {
 			}
 		}
 
-		gpuVendor := "NVIDIA"
+		gpuVendor := GetGPU()
 		switch {
 		case strings.Contains(gpuVendor, "Radeon"):
 			if _, err := os.Stat("./miners/AMD"); os.IsNotExist(err) {
