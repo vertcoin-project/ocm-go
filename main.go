@@ -56,6 +56,11 @@ func startupWindow() {
 				panic(err)
 			}
 
+			err = os.Remove("lycl.conf")
+			if err != nil {
+				panic(err)
+			}
+
 			cmd := exec.Command("lyclMiner.exe", "-g", "lycl.conf")
 			err = cmd.Run()
 			if err != nil {
