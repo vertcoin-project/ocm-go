@@ -10,19 +10,15 @@ import (
 	"github.com/andlabs/ui"
 )
 
-func startupWindow() string {
+func startupWindow() {
 	var GPUType string
 	err := ui.Main(func() {
 		box := ui.NewVerticalBox()
 		status := ui.NewLabel("Starting OCM")
 		box.Append(status, false)
-		window := ui.NewWindow("OCM 2", 100, 50, false)
+		window := ui.NewWindow("OCM-go", 200, 50, false)
 		window.SetChild(box)
 		window.SetMargined(true)
-		window.OnClosing(func(*ui.Window) bool {
-			ui.Quit()
-			return true
-		})
 
 		window.Show()
 
@@ -91,15 +87,14 @@ func startupWindow() string {
 			panic("Neither AMD or nVidia GPU found")
 		}
 
-		window.Destroy()
-		ui.Quit()
+		window.Hide()
+
+		go mainWindow(GPUType)
 	})
 
 	if err != nil {
 		panic(err)
 	}
-
-	return GPUType
 }
 
 func startAMD(address string) (*exec.Cmd, io.ReadCloser, error) {
@@ -140,7 +135,7 @@ func startNVIDIA(address string) (*exec.Cmd, io.ReadCloser, error) {
 }
 
 func mainWindow(GPUType string) {
-	err := ui.Main(func() {
+	ui.QueueMain(func() {
 		var cmd *exec.Cmd
 		input := ui.NewEntry()
 		button := ui.NewButton("Mine")
@@ -150,9 +145,9 @@ func mainWindow(GPUType string) {
 		box.Append(input, false)
 		box.Append(button, false)
 		box.Append(status, false)
-		window := ui.NewWindow("OCM-go", 100, 50, false)
-		window.SetMargined(true)
-		window.SetChild(box)
+		mWindow := ui.NewWindow("OCM-go", 100, 50, false)
+		mWindow.SetMargined(true)
+		mWindow.SetChild(box)
 
 		button.OnClicked(func(*ui.Button) {
 			var err error
@@ -169,7 +164,7 @@ func mainWindow(GPUType string) {
 			status.SetText("Started mining")
 		})
 
-		window.OnClosing(func(*ui.Window) bool {
+		mWindow.OnClosing(func(*ui.Window) bool {
 			if cmd != nil {
 				cmd.Process.Kill()
 			}
@@ -177,11 +172,8 @@ func mainWindow(GPUType string) {
 			ui.Quit()
 			return true
 		})
-		window.Show()
+		mWindow.Show()
 	})
-	if err != nil {
-		panic(err)
-	}
 }
 
 func main() {
@@ -189,6 +181,5 @@ func main() {
 		panic("Only Windows is supported at present")
 	}
 
-	GPUType := startupWindow()
-	mainWindow(GPUType)
+	startupWindow()
 }
