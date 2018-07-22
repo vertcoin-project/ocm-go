@@ -115,7 +115,7 @@ func startAMD(address string) (*exec.Cmd, io.ReadCloser, error) {
 		return nil, nil, err
 	}
 
-	cmd := exec.Command("cmd", "/C", "start", "lyclMiner.exe", "lycl.conf")
+	cmd := exec.Command("cmd", "/K", "lyclMiner.exe", "lycl.conf")
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -131,7 +131,7 @@ func startAMD(address string) (*exec.Cmd, io.ReadCloser, error) {
 }
 
 func startNVIDIA(address string) (*exec.Cmd, io.ReadCloser, error) {
-	cmd := exec.Command("cmd", "/C", "start", "./miners/NVIDIA/ccminer-x64.exe", "-a", "lyra2v2", "-o", "stratum+tcp://p2proxy.vertcoin.org:9171", "-u", address, "-p", "x")
+	cmd := exec.Command("cmd", "/K", "./miners/NVIDIA/ccminer-x64.exe", "-a", "lyra2v2", "-o", "stratum+tcp://p2proxy.vertcoin.org:9171", "-u", address, "-p", "x")
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
