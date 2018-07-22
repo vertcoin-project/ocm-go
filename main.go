@@ -174,6 +174,15 @@ func mainWindow(GPUType string) {
 			}
 
 			status.SetText("Started mining")
+
+			button.Disable()
+
+			err = cmd.Wait()
+			if err != nil {
+				panic(err)
+			}
+
+			button.Enable()
 		})
 
 		mWindow.OnClosing(func(*ui.Window) bool {
