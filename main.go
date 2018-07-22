@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"os/exec"
 	"runtime"
 	"strings"
 
@@ -31,37 +32,55 @@ func startupWindow() {
 			}
 		}
 
-		gpuVendor := GetGPU()
+		gpuVendor := "Radeon"
 		switch {
 		case strings.Contains(gpuVendor, "Radeon"):
-			status.SetText("Downloading AMD miner")
-			err := DownloadFile("https://github.com/CryptoGraphics/lyclMiner/releases/download/untagged-95777e4326ae4e5ccdb5/lyclMiner015.zip", "./miners/AMD.zip")
-			if err != nil {
-				panic(err)
-			}
+			if _, err := os.Stat("./miners/AMD"); os.IsNotExist(err) {
+				status.SetText("Downloading AMD miner")
+				err := DownloadFile("https://github.com/CryptoGraphics/lyclMiner/releases/download/untagged-95777e4326ae4e5ccdb5/lyclMiner015.zip", "./miners/AMD.zip")
+				if err != nil {
+					panic(err)
+				}
 
-			err = UnzipFile("./miners/AMD.zip", "./miners/AMD")
-			if err != nil {
-				panic(err)
-			}
+				err = UnzipFile("./miners/AMD.zip", "./miners/AMD")
+				if err != nil {
+					panic(err)
+				}
 
+				err = os.Remove("./miners/AMD.zip")
+				if err != nil {
+					panic(err)
+				}
+
+				cmd := exec.Command("./miners/AMD/lyclMiner015/lyclMiner.exe", "-g", "lycl.conf")
+				err = cmd.Run()
+				if err != nil {
+					panic(err)
+				}
+			}
 		case strings.Contains(gpuVendor, "NVIDIA"):
-			status.SetText("Downloading NVIDIA miner")
-			err := DownloadFile("https://vtconline.org/downloads/ccminer.zip", "./miners/NVIDIA.zip")
-			if err != nil {
-				panic(err)
-			}
+			if _, err := os.Stat("./miners/NVIDIA"); os.IsNotExist(err) {
+				status.SetText("Downloading NVIDIA miner")
+				err := DownloadFile("https://vtconline.org/downloads/ccminer.zip", "./miners/NVIDIA.zip")
+				if err != nil {
+					panic(err)
+				}
 
-			err = UnzipFile("./miners/NVIDIA.zip", "./miners/NVIDIA")
-			if err != nil {
-				panic(err)
-			}
+				err = UnzipFile("./miners/NVIDIA.zip", "./miners/NVIDIA")
+				if err != nil {
+					panic(err)
+				}
 
+				err = os.Remove("./miners/NVIDIA.zip")
+				if err != nil {
+					panic(err)
+				}
+			}
 		default:
 			panic("Neither AMD or nVidia GPU found")
 		}
 
-		status.SetText(gpuVendor)
+		//ui.Quit()
 	})
 
 	if err != nil {
