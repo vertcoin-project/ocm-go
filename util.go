@@ -2,7 +2,9 @@ package main
 
 import (
 	"archive/zip"
+	"bytes"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -84,4 +86,19 @@ func GetGPU() string {
 	History, _ := Info.Output()
 
 	return strings.TrimSpace(strings.Replace(string(History), "Name", "", -1))
+}
+
+func ReplaceInFile(file string, find string, replace string) error {
+	input, err := ioutil.ReadFile(file)
+	if err != nil {
+		return err
+	}
+
+	output := bytes.Replace(input, []byte(find), []byte(replace), -1)
+
+	if err = ioutil.WriteFile(file, output, 0666); err != nil {
+		return err
+	}
+
+	return nil
 }
