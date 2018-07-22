@@ -51,8 +51,13 @@ func startupWindow() {
 				}
 			}
 
-			cmd := exec.Command("./miners/AMD/lyclMiner015/lyclMiner.exe", "-g", "lycl.conf")
-			err := cmd.Run()
+			err := os.Chdir("./miners/AMD/lyclMiner015")
+			if err != nil {
+				panic(err)
+			}
+
+			cmd := exec.Command("lyclMiner.exe", "-g", "lycl.conf")
+			err = cmd.Run()
 			if err != nil {
 				panic(err)
 			}
@@ -103,7 +108,7 @@ func startAMD(address string) (*exec.Cmd, io.ReadCloser, error) {
 		return nil, nil, err
 	}
 
-	cmd := exec.Command("cmd", "/C", "start", "./miners/AMD/lyclMiner015/lyclMiner.exe", "lycl.conf")
+	cmd := exec.Command("cmd", "/C", "start", "lyclMiner.exe", "lycl.conf")
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
