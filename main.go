@@ -177,12 +177,16 @@ func mainWindow(GPUType string) {
 
 			button.Disable()
 
-			err = cmd.Wait()
-			if err != nil {
-				panic(err)
-			}
+			go func() {
+				ui.QueueMain(func() {
+					err := cmd.Wait()
+					if err != nil {
+						panic(err)
+					}
 
-			button.Enable()
+					button.Enable()
+				})
+			}()
 		})
 
 		mWindow.OnClosing(func(*ui.Window) bool {
