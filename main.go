@@ -178,12 +178,12 @@ func mainWindow(GPUType string) {
 			button.Disable()
 
 			go func() {
-				ui.QueueMain(func() {
-					err := cmd.Wait()
-					if err != nil {
-						panic(err)
-					}
+				err := cmd.Wait()
+				if err != nil {
+					panic(err)
+				}
 
+				ui.QueueMain(func() {
 					button.Enable()
 				})
 			}()
