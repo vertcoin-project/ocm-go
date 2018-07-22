@@ -56,7 +56,7 @@ func startupWindow() {
 				panic(err)
 			}
 
-			if _, err := os.Stat("lycl.conf"); os.IsExist(err) {
+			if _, err := os.Stat("lycl.conf"); err == nil {
 				err := os.Remove("lycl.conf")
 				if err != nil {
 					panic(err)
