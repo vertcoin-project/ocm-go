@@ -198,7 +198,7 @@ func mainWindow(GPUType string) {
 					}
 
 					ui.QueueMain(func() {
-						minerBox.Append(ui.NewLabel(line))
+						minerBox.Append(ui.NewLabel(line), false)
 					})
 				}
 
