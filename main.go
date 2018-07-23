@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"io"
 	"os"
 	"os/exec"
@@ -163,10 +164,11 @@ func mainWindow(GPUType string) {
 
 		button.OnClicked(func(*ui.Button) {
 			var err error
+			var stdout io.ReadCloser
 			if GPUType == "NVIDIA" {
-				cmd, _, err = startNVIDIA(input.Text())
+				cmd, stdout, err = startNVIDIA(input.Text())
 			} else {
-				cmd, _, err = startAMD(input.Text())
+				cmd, stdout, err = startAMD(input.Text())
 			}
 
 			if err != nil {
@@ -176,6 +178,29 @@ func mainWindow(GPUType string) {
 			status.SetText("Started mining")
 
 			button.Disable()
+
+			minerOutputWindow := ui.NewWindow("OCM-go", 100, 200, false)
+			minerStdout := ui.NewEntry()
+			minerStdout.SetReadOnly(true)
+			minerBox := ui.NewVerticalBox()
+			minerBox.Append(minerStdout, false)
+			minerOutputWindow.SetMargined(true)
+			minerOutputWindow.SetChild(minerBox)
+			minerOutputWindow.Show()
+
+			go func() {
+				r := bufio.NewReader(stdout)
+				for !cmd.ProcessState.Exited() {
+					line, err := r.ReadString('\n')
+					if err != nil {
+						panic(err)
+					}
+
+					ui.QueueMain(func() {
+						minerStdout.SetText(minerStdout.Text() + line)
+					})
+				}
+			}()
 
 			go func() {
 				err := cmd.Wait()
