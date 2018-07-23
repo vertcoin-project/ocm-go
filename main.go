@@ -187,6 +187,7 @@ func mainWindow(GPUType string) {
 
 			go func() {
 				r := bufio.NewReader(stdout)
+				n := 0
 				for {
 					line, err := r.ReadString('\n')
 					if err != nil {
@@ -198,6 +199,12 @@ func mainWindow(GPUType string) {
 					}
 
 					ui.QueueMain(func() {
+						if n >= 4 {
+							minerBox.Delete(0)
+							n--
+						}
+
+						n++
 						minerBox.Append(ui.NewLabel(line), false)
 					})
 				}
