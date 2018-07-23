@@ -209,10 +209,7 @@ func mainWindow(GPUType string) {
 			}()
 
 			go func() {
-				err := cmd.Wait()
-				if err != nil {
-					panic(err)
-				}
+				cmd.Wait()
 				running = false
 			}()
 		})
