@@ -188,9 +188,11 @@ func mainWindow(GPUType string) {
 			minerOutputWindow.SetChild(minerBox)
 			minerOutputWindow.Show()
 
+			var running bool
+
 			go func() {
 				r := bufio.NewReader(stdout)
-				for !cmd.ProcessState.Exited() {
+				for running {
 					line, err := r.ReadString('\n')
 					if err != nil {
 						panic(err)
@@ -204,6 +206,14 @@ func mainWindow(GPUType string) {
 				ui.QueueMain(func() {
 					button.Enable()
 				})
+			}()
+
+			go func() {
+				err := cmd.Wait()
+				if err != nil {
+					panic(err)
+				}
+				running = false
 			}()
 		})
 
