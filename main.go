@@ -200,13 +200,6 @@ func mainWindow(GPUType string) {
 						minerStdout.SetText(minerStdout.Text() + line)
 					})
 				}
-			}()
-
-			go func() {
-				err := cmd.Wait()
-				if err != nil {
-					panic(err)
-				}
 
 				ui.QueueMain(func() {
 					button.Enable()
