@@ -180,10 +180,7 @@ func mainWindow(GPUType string) {
 			button.Disable()
 
 			minerOutputWindow := ui.NewWindow("OCM-go", 100, 200, false)
-			minerStdout := ui.NewEntry()
-			minerStdout.SetReadOnly(true)
 			minerBox := ui.NewVerticalBox()
-			minerBox.Append(minerStdout, false)
 			minerOutputWindow.SetMargined(true)
 			minerOutputWindow.SetChild(minerBox)
 			minerOutputWindow.Show()
@@ -201,7 +198,7 @@ func mainWindow(GPUType string) {
 					}
 
 					ui.QueueMain(func() {
-						minerStdout.SetText(minerStdout.Text() + line)
+						minerBox.Append(ui.NewLabel(line))
 					})
 				}
 
