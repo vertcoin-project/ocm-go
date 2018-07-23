@@ -199,7 +199,7 @@ func mainWindow(GPUType string) {
 					}
 
 					ui.QueueMain(func() {
-						if n >= 4 {
+						if n >= 20 {
 							minerBox.Delete(0)
 							n--
 						}
